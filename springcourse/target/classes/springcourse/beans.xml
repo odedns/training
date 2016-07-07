@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd" >
+	
+	
+	<context:annotation-config/>
+<!-- <bean/> definitions here -->
+			
+
+ <bean id="testBean" class="springcourse.beans.TestBean" scope="singleton" >
+      <!-- collaborators and configuration for this bean go here -->      
+      <property name="stat" value="1" />
+      <property name="name" value="Foo" />
+      <!-- 
+      <property name="helloBean" ref="helloBean"/>
+      -->
+  </bean>
+  <bean id="helloBean" class="springcourse.beans.HelloBean" scope="singleton"
+   init-method="init" destroy-method="destroy">
+   	<property name="message" value="hello message" />
+   	</bean>
+  
+  <bean id="serviceBean" class="springcourse.beans.ServiceBean">
+  	<constructor-arg name="name" value="myservice" />	
+  	<property name="messageBean" ref="messageBean" />
+  </bean>
+  
+  <bean id="messageBean" class="springcourse.beans.MessageBean">
+  	<property name="messages">
+  		<list>
+  			<value>msg1</value>
+  			<value>msg2</value>
+  			<value>msg3</value>
+  		</list>
+  	</property>
+  </bean>
+   
+  <bean id="serviceFactory" class="springcourse.beans.ServiceFactory" />
+  <bean id="serviceBean2" class="springcourse.beans.ServiceBean"  
+  factory-bean="serviceFactory"
+   factory-method="createService"/>
+    
+    <bean id="myBean" class="springcourse.beans.MyBean" >
+    	<property name="serviceBean" ref="serviceBean2"/>
+    </bean>
+    <!--  remoting bean -->
+    
+    <bean id="empServiceBean"   
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">  
+    <property name="serviceUrl"   
+         value="http://localhost:8080/remote/empService"></property>  
+    <property name="serviceInterface" value="springcourse.remoting.EmpService"></property>  
+</bean>  
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    
+       
+</beans>

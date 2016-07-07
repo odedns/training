@@ -1,0 +1,90 @@
+Docker lab1
+==============
+docker run debian ls
+docker ps -a
+docker run -it --name d1 debian /bin/bash
+touch a.txt
+docker start d1
+docker exec -it d1 bash
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+
+
+lab2
+=====
+docker run -it --name c1 -h h1 debian /bin/bash
+docker run -it --name c2 -h h2 debian /bin/bash
+docker inspect c1
+docker stop c1 c2
+docker rm c1 c2
+
+
+lab3
+=====
+docker run -d --name n1 -p 8080:80 nginx
+docker exec -it n1 bash
+apt-get update
+apt-get install vim
+
+
+lab5
+========
+ docker run -it --name dev1 ubuntu /bin/bash
+ apt-get update
+ apt-get install openjdk-8-jdk
+ apt-get install maven
+ apt-get install git
+ 
+ Dockerfile:
+ FROM ubuntu
+ EXPOSE 8080
+ RUN apt-get update && apt-get install -y \
+  openjdk-8-jdk \
+  maven \
+  git 
+  ENTRYPOINT ["/bin/bash"]
+ 
+ docker built -t dev_img .
+
+ 
+lab6
+======
+Dockerfile:
+FROM dev1
+ EXPOSE 8080
+COPY jenkins.war /root/jenkins.war
+ENTRYPOINT ["java" "-jar" "/root/jenkins.war"]
+
+docker built -t jenkins_img .
+docker run -it -p 8080:8080 <image>
+
+
+lab10
+======
+docker network create --driver=bridge my_net
+
+lab11
+======
+docker pull google/cadvisor
+docker run -d --name cadvisor \
+-v /:/rootfs:ro \
+-v /var/run:/var/run:rw \
+-v /sys:/sys:ro \
+-v /var/lib/docker/:/var/lib/docker:ro \
+-p 8080:8080 \
+google/cadvisor:latest
+
+
+lab12
+=======
+docker pull swarm
+ docker run swarm help
+sid = $(docker run swarm create)
+docker-machine create -d virtualbox --swarm --swarm-master --swarm-discovery token://$sid swarm-master
+docker-machine create -d virtualbox  --swarm  --swarm-discovery token://$sid swarm-node-01
+docker-machine create -d virtualbox  --swarm  --swarm-discovery token://$sid swarm-node-02
+eval "$(docker-machine env --swarm swarm-master)"
+docker run swarm list token://$sid
+docker run -itd --name bb01 busybox 
+docker run -itd --name bb02 busybox 
+docker ps

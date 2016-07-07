@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util" xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+	<context:annotation-config/>
+	<bean name="transactionManager" class="org.springframework.jms.connection.JmsTransactionManager">
+		<constructor-arg ref="jmsFactory"/>
+	</bean>
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
+	
+	<bean id="jmsFactory" 	class="org.apache.activemq.ActiveMQConnectionFactory">
+      <property name="brokerURL">
+	  <value>tcp://localhost:61616</value>
+      </property>
+   </bean>
+
+	<bean name="myConverter" class="com.trainologic.jms.BidMessageConverter"/>
+
+	<bean class="org.springframework.jms.core.JmsTemplate">
+		<constructor-arg ref="jmsFactory"/>
+		<property name="messageConverter" ref="myConverter"/>
+		<property name="defaultDestinationName" value="test"/>
+	</bean>
+	
+	<bean name="sender" class="com.trainologic.ex2.SendMessages"/>
+
+
+
+
+</beans>
