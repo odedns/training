@@ -5,6 +5,9 @@ docker ps -a
 docker run -it --name d1 debian /bin/bash
 touch a.txt
 docker start d1
+or 
+docker start -a -i d1
+
 docker exec -it d1 bash
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
