@@ -49,8 +49,14 @@
     <bean id="myBean" class="springcourse.beans.MyBean" >
     	<property name="serviceBean" ref="serviceBean2"/>
     </bean>
+    <!--  remoting bean -->
     
-    
+    <bean id="empServiceBean"   
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">  
+    <property name="serviceUrl"   
+         value="http://localhost:8080/remote/empService"></property>  
+    <property name="serviceInterface" value="springcourse.remoting.EmpService"></property>  
+</bean>  
     <aop:aspectj-autoproxy proxy-target-class="true"/>
     
        

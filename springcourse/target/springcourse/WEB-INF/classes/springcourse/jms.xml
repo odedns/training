@@ -22,27 +22,21 @@
 	
 
 
-	<bean class="org.springframework.jms.core.JmsTemplate">
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<constructor-arg ref="jmsFactory"/>
-		<property name="messageConverter" ref="myConverter"/>
 		<property name="defaultDestinationName" value="test"/>
 	</bean>
-
+	<bean id="jmsSender" class="springcourse.jms.JmsSender">
+		<property name="jmsTemplate" ref="jmsTemplate"/>
+	</bean>
 	
-	<bean name="myConverter" class="springcourse.jms.BidMessageConverter" />
-
-	<bean name="myListenerBig" class="springcourse.jms.TestJMSBig" />
-
-	<bean name="myListenerSmall" class="springcourse.jms.TestJMSSmall" />
-
-	<jms:listener-container connection-factory="jmsFactory" 
-		message-converter="myConverter" >
-		<jms:listener destination="test" ref="myListenerBig" 
-			method="onMessage" selector="bidscount &gt; 50" />
-		<jms:listener destination="test" ref="myListenerSmall"
-			method="onMessage" selector="bidscount &lt;= 50" />
-	</jms:listener-container>
-
-	<bean name="sender" class="springcourse.jms.SendMessages"/>
+	<bean id="jmsListener" class="springcourse.jms.JmsListener"/>
+	<bean id="jmsContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    	<property name="connectionFactory" ref="jmsFactory" />
+    	<property name="destinationName" value="test" />
+    	<property name="messageListener" ref="jmsListener" />
+	</bean>
+	
 
 </beans>
