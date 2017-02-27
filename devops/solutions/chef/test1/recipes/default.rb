@@ -16,7 +16,7 @@ end
 
 # put chefed in the group so we can make sure we don't remove it by managing cool_group
 group 'tomcat' do
-  members 'tomcat'
+  members 'tomcat7'
   action :create
 end
 
@@ -30,7 +30,7 @@ service 'tomcat7' do
 end
 
 directory "#{webapps}" do
-  owner 'tomcat'
+  owner 'tomcat7'
   group 'tomcat'
   mode '0755'
   action :create
@@ -40,7 +40,7 @@ Chef::Log.info("webapps dir = #{webapps}")
 war_file = "#{webapps}/petclinic.war"
 remote_file "#{war_file}" do
   source 'http://10.0.2.2:8080/job/petclinic_github/lastSuccessfulBuild/org.springframework.samples$petclinic_sdk/artifact/org.springframework.samples/petclinic_sdk/1.0.0-SNAPSHOT/petclinic_sdk-1.0.0-SNAPSHOT.war'
-  owner 'tomcat'
+  owner 'tomcat7'
   group 'tomcat'
   mode '0755'
   action :create
